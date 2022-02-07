@@ -1,0 +1,5 @@
+---
+# tasks file for escapace.observability
+
+- include_tasks: envoy.yml
+  when: ansible_os_family == "RedHat"

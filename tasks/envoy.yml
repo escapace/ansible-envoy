@@ -1,0 +1,48 @@
+---
+
+- name: check envoy version
+  ansible.builtin.shell: |
+    set -e
+    set -u
+    set -o pipefail
+
+    if [[ -f "/usr/bin/envoy" ]]
+    then
+      version="$(/usr/bin/envoy --version | tail -n2 | head -n1 | awk '{ print $3 }' | awk -F'/' '{ print $2 }')"
+
+      echo "${version}"
+    else
+      exit 1
+    fi
+  args:
+    executable: /bin/bash
+  changed_when: false
+  ignore_errors: true
+  no_log: true
+  register: envoy_current_version
+
+- name: install envoy
+  when: envoy_current_version.failed or envoy_current_version['stdout'] != envoy_version
+  block:
+    - name: download envoy
+      get_url:
+        url: "{{ envoy_archive_url }}"
+        dest: "/tmp/{{ envoy_archive }}"
+        checksum: "sha256:{{ envoy_checksum }}"
+
+    - name: extract envoy
+      ansible.builtin.unarchive:
+        src: "/tmp/{{ envoy_archive }}"
+        dest: "/usr/bin"
+        mode: 0755
+        owner: root
+        group: root
+        setype: bin_t
+        seuser: system_u
+        remote_src: true
+        extra_opts: ["--strip-components=2"]
+
+    - name: cleanup
+      file:
+        path: "/tmp/{{ envoy_archive }}"
+        state: "absent"
