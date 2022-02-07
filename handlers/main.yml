@@ -1,0 +1,6 @@
+---
+# handlers file for escapace.observability
+
+- name: observability daemon-reload
+  systemd:
+    daemon_reload: yes

@@ -1,0 +1,4 @@
+---
+# defaults file for escapace.observability
+
+envoy_version: 1.21.0
