@@ -1,5 +1,10 @@
 ---
 
+- name: install dependencies
+  ansible.builtin.dnf:
+    name: xz
+    state: present
+
 - name: check envoy version
   ansible.builtin.shell: |
     set -e
@@ -25,10 +30,11 @@
   when: envoy_current_version.failed or envoy_current_version['stdout'] != envoy_version
   block:
     - name: download envoy
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ envoy_archive_url }}"
         dest: "/tmp/{{ envoy_archive }}"
         checksum: "sha256:{{ envoy_checksum }}"
+        mode: 660
 
     - name: extract envoy
       ansible.builtin.unarchive:
@@ -43,6 +49,6 @@
         extra_opts: ["--strip-components=2"]
 
     - name: cleanup
-      file:
+      ansible.builtin.file:
         path: "/tmp/{{ envoy_archive }}"
         state: "absent"
