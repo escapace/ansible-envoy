@@ -2,7 +2,9 @@
 
 - name: install dependencies
   ansible.builtin.dnf:
-    name: xz
+    name:
+      - tar
+      - xz
     state: present
 
 - name: check envoy version
@@ -33,8 +35,11 @@
       ansible.builtin.get_url:
         url: "{{ envoy_archive_url }}"
         dest: "/tmp/{{ envoy_archive }}"
-        checksum: "sha256:{{ envoy_checksum }}"
+        owner: root
+        group: root
         mode: 660
+        force: true
+        checksum: "sha256:{{ envoy_checksum }}"
 
     - name: extract envoy
       ansible.builtin.unarchive:
