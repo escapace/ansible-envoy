@@ -1,4 +1,4 @@
 ---
 # defaults file for escapace.envoy
 
-envoy_version: 1.26.2
+envoy_version: 1.28.0
