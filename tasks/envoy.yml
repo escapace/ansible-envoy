@@ -1,5 +1,4 @@
 ---
-
 - name: install dependencies
   ansible.builtin.dnf:
     name:
@@ -34,26 +33,26 @@
     - name: download envoy
       ansible.builtin.get_url:
         url: "{{ envoy_archive_url }}"
-        dest: "/tmp/{{ envoy_archive }}"
+        dest: /tmp/{{ envoy_archive }}
         owner: root
         group: root
         mode: 660
         force: true
-        checksum: "sha256:{{ envoy_checksum }}"
+        checksum: sha256:{{ envoy_checksum }}
 
     - name: extract envoy
       ansible.builtin.unarchive:
-        src: "/tmp/{{ envoy_archive }}"
-        dest: "/usr/bin"
-        mode: 0755
+        src: /tmp/{{ envoy_archive }}
+        dest: /usr/bin
+        mode: "0755"
         owner: root
         group: root
         setype: bin_t
         seuser: system_u
         remote_src: true
-        extra_opts: ["--strip-components=2"]
+        extra_opts: [--strip-components=2]
 
     - name: cleanup
       ansible.builtin.file:
-        path: "/tmp/{{ envoy_archive }}"
-        state: "absent"
+        path: /tmp/{{ envoy_archive }}
+        state: absent
