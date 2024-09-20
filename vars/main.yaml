@@ -7,7 +7,7 @@ envoy_goarch_map:
   aarch64: arm64
   64-bit: amd64
 
-envoy_goarch: "{{ envoy_goarch_map[ansible_architecture] }}"
+envoy_goarch: '{{ envoy_goarch_map[ansible_architecture] }}'
 
 envoy_archive: envoy-v{{ envoy_version }}-linux-{{ envoy_goarch }}.tar.xz
 envoy_archive_url: https://archive.tetratelabs.io/envoy/download/v{{ envoy_version }}/{{ envoy_archive }}
@@ -22,8 +22,8 @@ envoy_checksums:
   envoy-v1.12.5-linux-amd64.tar.xz: 74363a3d5bbbc155ebc37c3319cbb6577b154e59ffd011d3fe15467a3b626890
   envoy-v1.12.6-linux-amd64.tar.xz: 750848079dadb4dc7982bb86d68d76b5b34fe083278a3187bfa70224d07431ab
   envoy-v1.12.7-linux-amd64.tar.xz: 10c22eabf321b5dc860742a4a31f46168198a4620eb2ee1847e775f55331be24
-  envoy-v1.13.0-linux-amd64.tar.xz: "06a677beb179b6164ca76b3a87c9df65c0e214859e0b9527571708a0492dd057"
-  envoy-v1.13.1-linux-amd64.tar.xz: "005f1c9ee4f9d7ef9a9b6132b6001cdc1fd2b29071489b41831b33c0007ed3bb"
+  envoy-v1.13.0-linux-amd64.tar.xz: '06a677beb179b6164ca76b3a87c9df65c0e214859e0b9527571708a0492dd057'
+  envoy-v1.13.1-linux-amd64.tar.xz: '005f1c9ee4f9d7ef9a9b6132b6001cdc1fd2b29071489b41831b33c0007ed3bb'
   envoy-v1.13.2-linux-amd64.tar.xz: d5f3c537b257dbad600ae3722bce4a7b04bd41d1633e58da0ba475dad03bf689
   envoy-v1.13.3-linux-amd64.tar.xz: 62cb503b233ca16e3a1001cc2c56a9d840a3ec5b85cc1236edcc1e904443ea5e
   envoy-v1.13.4-linux-amd64.tar.xz: a458c641eb66bacd3b7944a96eaae0595ef0688b804fe2c00de73f36f6a5956c
@@ -66,7 +66,7 @@ envoy_checksums:
   envoy-v1.17.1-linux-amd64.tar.xz: 9797175d771db74da4b0500b63811784beeb8a7f5d327989202f6e987320071c
   envoy-v1.17.1-linux-arm64.tar.xz: 50c379037174a2afd245f7d671e8a9754d3afd24ae1dd98b2da6e4a84db49073
   envoy-v1.17.2-linux-amd64.tar.xz: 80f754e6a2ba490ea9db7466acf1478214ef1670da1b9b844da68d126ce086e4
-  envoy-v1.17.2-linux-arm64.tar.xz: "093a4cfef43d09b9568a43e8b282157cd1744f98665cb7bff7e7075e82ad302c"
+  envoy-v1.17.2-linux-arm64.tar.xz: '093a4cfef43d09b9568a43e8b282157cd1744f98665cb7bff7e7075e82ad302c'
   envoy-v1.17.2-windows-amd64.tar.xz: 33f46a2de5b9f5116e40a20d3a4ec19b5678e7389414853b1e41f58640e60b63
   envoy-v1.17.3-darwin-amd64.tar.xz: 4348507075e1250e31b1d2fefee706664bf0fbd077014634683a1e9eb84a8fbd
   envoy-v1.17.3-linux-amd64.tar.xz: 8e0a9b158c7d5c0f87def2405167a3689a13a6fd5cbe28235a499788a86650f8
@@ -105,7 +105,7 @@ envoy_checksums:
   envoy-v1.19.4-linux-arm64.tar.xz: a6b10d3716e76f0b2fa60770e2e815507fae202f0cd00b46318ca87caff7cff0
   envoy-v1.19.4-windows-amd64.tar.xz: 9310e6dba6b7841cb8b2a2db883bc23d33ddbe0a94cbf3f131cae933922478bd
   envoy-v1.19.5-linux-amd64.tar.xz: 11dbb4fb78e42cd419be06f25b653ebff5cc98517e925169744c9e731f62c589
-  envoy-v1.19.5-linux-arm64.tar.xz: "08f35948a8c298748acaf8cfdc7ca524e248dd91652d9aa73bc72c3dad5c4876"
+  envoy-v1.19.5-linux-arm64.tar.xz: '08f35948a8c298748acaf8cfdc7ca524e248dd91652d9aa73bc72c3dad5c4876'
   envoy-v1.19.5-windows-amd64.tar.xz: e292660f5b43bd67955ec3b5c0b4ff38d74e6a609ab0fa646ac02d4065c7571c
   envoy-v1.20.0-darwin-amd64.tar.xz: 1a82cb792a29a18a8e2e8500400562caf8012dee07b2c4731490dc125d200084
   envoy-v1.20.0-linux-amd64.tar.xz: 1f44289493cec2587a7af03303bf0b5a5a705f60cbea509656c264027d84ffc2
@@ -118,7 +118,7 @@ envoy_checksums:
   envoy-v1.20.2-linux-amd64.tar.xz: dd951d4096eef0fb01e7ca2337713869aaa240917929e602df6cb0554b25cd25
   envoy-v1.20.2-linux-arm64.tar.xz: e689bd05493027868cdc3454471a56ee65362c2641536a3f451302a8b184f223
   envoy-v1.20.2-windows-amd64.tar.xz: ebb821eb5b51170ea8ba8772b1fedd9a680f326f4873a29a453f8586c215c9a5
-  envoy-v1.20.3-linux-amd64.tar.xz: "05ce3420fd30bf3f053c967be9cb468f97670879d3a3145acec5a5b9353f92f9"
+  envoy-v1.20.3-linux-amd64.tar.xz: '05ce3420fd30bf3f053c967be9cb468f97670879d3a3145acec5a5b9353f92f9'
   envoy-v1.20.3-linux-arm64.tar.xz: f949c4dc8af260c74a1329574154b30b87624c18662cf1c2958d3bb1c647e719
   envoy-v1.20.3-windows-amd64.tar.xz: b8017fc858b2c4e6afe03f3d8f032265c5b24032d214e7927f3770c4f5f66cf3
   envoy-v1.20.4-linux-amd64.tar.xz: 39d58a9fbad098098e4a2c78caca175961a17107a1b4d941277c8f40ece4065e
@@ -131,7 +131,7 @@ envoy_checksums:
   envoy-v1.20.6-windows-amd64.tar.xz: 81fedb29ceb5799c2565c39bcfb60693cf8137b34df401f3d60dfcb0bc9e8c7d
   envoy-v1.20.7-linux-amd64.tar.xz: ce5889752b418562d16df193ac45d5556fb888cc1e9071452eea427639fd7a59
   envoy-v1.20.7-linux-arm64.tar.xz: 64d6c49db09478a7517d7710f1c5d5f03c01ad1ca6e8458ed992610931575d7a
-  envoy-v1.20.7-windows-amd64.tar.xz: "0e8ce25d1abea6fdb151fada3e2ccaeb64fd3a43c6026c6c76d1f32001f8151c"
+  envoy-v1.20.7-windows-amd64.tar.xz: '0e8ce25d1abea6fdb151fada3e2ccaeb64fd3a43c6026c6c76d1f32001f8151c'
   envoy-v1.21.0-darwin-amd64.tar.xz: fe8b85a2d7fea917a8629cd2192e3adefba02cf63f9906b24dc5eb5c9abb22d0
   envoy-v1.21.0-darwin-arm64.tar.xz: c78b5c4b2dc05d2d16c8a98b3232baacc3b723a6b584bce78a72e45d6267767d
   envoy-v1.21.0-linux-amd64.tar.xz: d422c3578b345c77d7bb0290e1338df4e52eaa671d5c8dd9d51667ce6d848d09
@@ -152,7 +152,7 @@ envoy_checksums:
   envoy-v1.21.4-linux-amd64.tar.xz: 20803f66a3ec690ba1d5ab1cf81844a1e6e6a8da1437e1a935ee8a8d0c524d41
   envoy-v1.21.4-linux-arm64.tar.xz: eb8226590f744ae6f20a5a438b8579df337a64e587f57a5c248578fffa193091
   envoy-v1.21.4-windows-amd64.tar.xz: 71fb2ddb89f379bc2269730bdf69538816bd63785adeaacbcbaa499fc86fcf78
-  envoy-v1.21.5-linux-amd64.tar.xz: "00b4d7bfdb015c3e7b15c07fa2e3dcf4d19fbff1a32784e1a0726fa03c585c8d"
+  envoy-v1.21.5-linux-amd64.tar.xz: '00b4d7bfdb015c3e7b15c07fa2e3dcf4d19fbff1a32784e1a0726fa03c585c8d'
   envoy-v1.21.5-linux-arm64.tar.xz: 45cb15c4771ebfa4d0c26ec2fdba963a62e0374ba557b70209ede0185771dfb9
   envoy-v1.21.6-linux-amd64.tar.xz: 71175fe44e5eacdd0b8ac738997692e0e9f8f80fea5bed71e02a5e1fc46539dc
   envoy-v1.21.6-linux-arm64.tar.xz: ecc492113b064666af29e4f9ef87e6262c1918b51ce58ffb16e5fe408da2d1c7
@@ -166,9 +166,9 @@ envoy_checksums:
   envoy-v1.22.1-linux-arm64.tar.xz: 47f293275a7f838051c40655cc46db5aa978369023e114631982e7000360a670
   envoy-v1.22.1-windows-amd64.tar.xz: 1a81c86a7d28a695f96f932f7071b1e549797a529fd1034adad3a6a24e2815c2
   envoy-v1.22.10-linux-amd64.tar.xz: 7ce5029331e632f79fd6cc4a7cd0f76c6391ac89e809227764e473ec8bd55ab5
-  envoy-v1.22.10-linux-arm64.tar.xz: "0374d6f37cb26824e086ecedb2d168bf8e368ca026b7a353594ca0aaeba5fd7c"
+  envoy-v1.22.10-linux-arm64.tar.xz: '0374d6f37cb26824e086ecedb2d168bf8e368ca026b7a353594ca0aaeba5fd7c'
   envoy-v1.22.10-windows-amd64.tar.xz: 995d96652d4f931f4baaa935924aa6dd67fe023e9221084d1bb023646488ef76
-  envoy-v1.22.11-linux-amd64.tar.xz: "043cf75d05e3aa6a316553d4be52eaff02b9cb60f09d78073acaceb5411d4b49"
+  envoy-v1.22.11-linux-amd64.tar.xz: '043cf75d05e3aa6a316553d4be52eaff02b9cb60f09d78073acaceb5411d4b49'
   envoy-v1.22.11-linux-arm64.tar.xz: fa5f96e97dfb49ccf52712cc85a0d5403eaa4199ff9dab0b8559a6840de9d843
   envoy-v1.22.11-windows-amd64.tar.xz: 7dc360575df55b014fe6467cfc30ed9ac083825f6775e998606d6bf8e7d34cb4
   envoy-v1.22.2-darwin-amd64.tar.xz: f848fb6e6a7451d6a1ce021bf763637c15c920e185814f9243a8a04d5c6b0b4a
@@ -195,11 +195,11 @@ envoy_checksums:
   envoy-v1.22.9-linux-amd64.tar.xz: 9c0970ca51cb27b33bf984eede694f378f7d8e5201a8b3c9b12cf27ff9c21887
   envoy-v1.22.9-linux-arm64.tar.xz: f4a13000bd7c3e2a745a49be13ffddbd52fa1280d3d3567521d7f4585f9452e8
   envoy-v1.22.9-windows-amd64.tar.xz: 7e019293503c8c6a57f1139519945006f949bf22b320454968c7641b15a08e12
-  envoy-v1.23.0-linux-amd64.tar.xz: "0bec2ec1d7b7ee37e322339583d0687e6aeeb62cb1258264bc0dd2719d7445b4"
+  envoy-v1.23.0-linux-amd64.tar.xz: '0bec2ec1d7b7ee37e322339583d0687e6aeeb62cb1258264bc0dd2719d7445b4'
   envoy-v1.23.0-linux-arm64.tar.xz: cfb3cffd0e94e6c1f4b536e2dadea8f94497a2f6f75416052505067b76f76140
   envoy-v1.23.0-windows-amd64.tar.xz: e5e59ff6a736d709164dc4c5c59314152d40a03d982830efc42c4d9118a34ff6
   envoy-v1.23.1-darwin-amd64.tar.xz: 82c8ea5e27aba39779bf87daffde1eb5fa67c9648cf7db5764b74f61f4e9ff4c
-  envoy-v1.23.1-darwin-arm64.tar.xz: "0b2ab35b05d244779d72e1d35b94cf1b0bfcb71f086f3a30e2e5a9317c7b042f"
+  envoy-v1.23.1-darwin-arm64.tar.xz: '0b2ab35b05d244779d72e1d35b94cf1b0bfcb71f086f3a30e2e5a9317c7b042f'
   envoy-v1.23.1-linux-amd64.tar.xz: d133a0335a9d6b5354954bba57994b3207b25eed006cf02c74c0a820cb3fb794
   envoy-v1.23.1-linux-arm64.tar.xz: 8791d9e9f2fcea982114b007cd9ca020c2600a3f430f972f5097a815b07e3895
   envoy-v1.23.1-windows-amd64.tar.xz: ac54f1e132d3c251eef75c505b3bfbe8bb163db41ea6a75639c0fbfbf40d1e87
@@ -253,7 +253,7 @@ envoy_checksums:
   envoy-v1.24.11-linux-arm64.tar.xz: 67d093ddcb7a5085dc4f53861e9188f0ade382fec453c00d0e70808e5faaa5d8
   envoy-v1.24.11-windows-amd64.tar.xz: 407749e9f1446b965475900561e5246747fadfdba8708a32925099cf89c01c24
   envoy-v1.24.12-linux-amd64.tar.xz: 208af25638ae82a07bcfeb79214f173631967a9a369d05647c127c881b4b78f3
-  envoy-v1.24.12-linux-arm64.tar.xz: "021c871fd8984ed2255f9141d035b37639adae53b44e38bdd787a90c6ca9c5fd"
+  envoy-v1.24.12-linux-arm64.tar.xz: '021c871fd8984ed2255f9141d035b37639adae53b44e38bdd787a90c6ca9c5fd'
   envoy-v1.24.12-windows-amd64.tar.xz: 7d38847405aa8e67c1b17fd0f459f53cf1010b7fbb1d7f6ff820e00fa88072ac
   envoy-v1.24.2-linux-amd64.tar.xz: 926ba94be962eb383e899f9ce749eb05e62f71a36c77c9010e6d52aa41474770
   envoy-v1.24.2-linux-arm64.tar.xz: 5b15d27247484fff22e403df9dd234ba33e826dc58b8d5edc8fc74ccc7a52b82
@@ -262,14 +262,14 @@ envoy_checksums:
   envoy-v1.24.3-linux-arm64.tar.xz: 9532dc4b344546f7ca755f7f4b913db29aaa8babaff948227989d127694825bb
   envoy-v1.24.3-windows-amd64.tar.xz: 58a203dddc20dc7d2e5b1253af1750982a6d658c686307a8754c3834356ebffa
   envoy-v1.24.4-linux-amd64.tar.xz: 7b77cbaae5860fdf84e3f0f7317af9232d8d1e310a3986b1fe4fee5b4e005df6
-  envoy-v1.24.4-linux-arm64.tar.xz: "0d61fc22e98b1b6c0802264904b5bec57af8f3d09c2ed7f411a198e521a219ff"
+  envoy-v1.24.4-linux-arm64.tar.xz: '0d61fc22e98b1b6c0802264904b5bec57af8f3d09c2ed7f411a198e521a219ff'
   envoy-v1.24.4-windows-amd64.tar.xz: 7c853b99991a2b175ef73a67d34d7b743df8c13cf1f41dfd1346beb1a38cc0e7
   envoy-v1.24.5-linux-amd64.tar.xz: ceaf466644266e71ffa9138b558b592b1a4c23a50371af4ab0fde9331fd561d9
   envoy-v1.24.5-linux-arm64.tar.xz: 28eadfef9d3c930f3d3a592f0ad8f0ba1f9dcf453df0642e5013e8f3cf0cfc35
   envoy-v1.24.5-windows-amd64.tar.xz: a475ca8249d623fa5d3d8cb786779dce46a46d48ba467ee819ec1bc331ecb316
   envoy-v1.24.6-linux-amd64.tar.xz: 4c22dd7c942feedb18bd9cbb14d8aab07ae7d6ae3febdee33e04580a9e095049
   envoy-v1.24.6-linux-arm64.tar.xz: 926a148e8e3361f6dbea6114e310a305e7739dbd80077681288b8a49465e3d32
-  envoy-v1.24.6-windows-amd64.tar.xz: "0717161e255a3da48958b6934c89aa2e3691ff2753f8e61da9e735edc71bce3a"
+  envoy-v1.24.6-windows-amd64.tar.xz: '0717161e255a3da48958b6934c89aa2e3691ff2753f8e61da9e735edc71bce3a'
   envoy-v1.24.7-linux-amd64.tar.xz: 4c0f771a8b88ecd0a87d833968363108b0025d9888dd861b3ba815ac4f2393c1
   envoy-v1.24.7-linux-arm64.tar.xz: 2cab34038bf1bb3d4737135923e333e16e900f093e180682008fe594c8fa5ee2
   envoy-v1.24.7-windows-amd64.tar.xz: cfc4c6a2eae401d18403768fc5c5330dd55aca362d7913daffb11026bf490147
@@ -305,7 +305,7 @@ envoy_checksums:
   envoy-v1.25.3-windows-amd64.tar.xz: 945be3531645d3105ee3372459f489f3a0d5d29263ebdc69f0cc573eaffd4820
   envoy-v1.25.4-darwin-amd64.tar.xz: cf2323d4d12ea48c2df8442f848829da5e17b3100a1aa6d7129c9aa8b9af64db
   envoy-v1.25.4-darwin-arm64.tar.xz: 864e6fdfe5f610c267a7f35fd780aaeb92973583f04773f6c9debc0a54a5e726
-  envoy-v1.25.4-linux-amd64.tar.xz: "07e590618a58aadd374cc2a895b88221ec2e73c6f1e124a9658235b44587d402"
+  envoy-v1.25.4-linux-amd64.tar.xz: '07e590618a58aadd374cc2a895b88221ec2e73c6f1e124a9658235b44587d402'
   envoy-v1.25.4-linux-arm64.tar.xz: 64d8a4b902eb16cc575d03767392441c1c2bf743f034589e2cc1e6e30f71c22f
   envoy-v1.25.4-windows-amd64.tar.xz: de3843a3a74bc15cbd72fcf82d04a7b7d373ea19e0c5af941db3f989106c228d
   envoy-v1.25.5-linux-amd64.tar.xz: 92711a8fe7425ca0d1b6c1441b37c3ae884049edc0c870781ae380c460f4e9cc
@@ -318,13 +318,13 @@ envoy_checksums:
   envoy-v1.25.7-windows-amd64.tar.xz: c4a2dbce7d7606d3b9a6b176011e731546bb40ff117fbc61ccc3339cde2ca3b6
   envoy-v1.25.8-linux-amd64.tar.xz: 5b092892171356b7cd7b7eb4edcf4fb25e66fb6f8c08d78fbb0fd57c7d1096e2
   envoy-v1.25.8-linux-arm64.tar.xz: a95f051a4dc1d3183e6061970eb396541f7d8a683cea6d8429a365f52d22dba8
-  envoy-v1.25.8-windows-amd64.tar.xz: "0580e509189586a93b1ad838c8c10393deff121dc1193c6d15cd2b306a6a2ff9"
+  envoy-v1.25.8-windows-amd64.tar.xz: '0580e509189586a93b1ad838c8c10393deff121dc1193c6d15cd2b306a6a2ff9'
   envoy-v1.25.9-linux-amd64.tar.xz: 6e57f64e3b3c5e561ab1ff4a3f17aa36cef374cf0b6b4e35d2a7ec5858ef2c13
   envoy-v1.25.9-linux-arm64.tar.xz: 5f977cdddf5f3ddb011488671fbb9720befbe31cc4fc7818787d0ab6fcd44fa6
   envoy-v1.25.9-windows-amd64.tar.xz: 424100a17ad87f575a8c55eb7e8bab0d6c8d6b0cc2e70e4c384b444e9158d537
   envoy-v1.26.0-darwin-amd64.tar.xz: a4713a7d8d336a303ebd1d967c0c720df7514592d8af7932eb8980ecebf89adb
   envoy-v1.26.0-darwin-arm64.tar.xz: d4b8e5201e8dfce7595e1023fd3c23b15c74ff1ff6972034446d245974348532
-  envoy-v1.26.0-linux-amd64.tar.xz: "0057f8fea805b7c064a1fce3302ad6cebe7e1b2cf56d8f7c70673fb2cf73350f"
+  envoy-v1.26.0-linux-amd64.tar.xz: '0057f8fea805b7c064a1fce3302ad6cebe7e1b2cf56d8f7c70673fb2cf73350f'
   envoy-v1.26.0-linux-arm64.tar.xz: 53505385dd48e7fc32b0c598371ca0e114eb6b2db10593ca3ba148def5942833
   envoy-v1.26.0-windows-amd64.tar.xz: c19ea2b148c4afbdaaf6d136e383fcad0952db78e008add58fdfa261c8747fae
   envoy-v1.26.1-linux-amd64.tar.xz: d5531924abd78c471982a3b07f15a0011694fabbe7fba29a0201e3543cbb92e9
@@ -353,16 +353,16 @@ envoy_checksums:
   envoy-v1.27.0-linux-arm64.tar.xz: fbc03ece102fdbe2754171470d89c2029cddd8f09442463e661692372642f1f0
   envoy-v1.27.0-windows-amd64.tar.xz: 85c27bed035c2c5668f45b283dd522c958ec5fc1130446b16ea75675c4f925a5
   envoy-v1.27.1-darwin-amd64.tar.xz: 54466ce9dfbb2f0165b58002e0a61fb1c6dae723b6513a0ada47199ad1615338
-  envoy-v1.27.1-darwin-arm64.tar.xz: "07b6640638a408f34f0f990e37b131dc029e85a596e9fc1eb659dad82221c1fa"
+  envoy-v1.27.1-darwin-arm64.tar.xz: '07b6640638a408f34f0f990e37b131dc029e85a596e9fc1eb659dad82221c1fa'
   envoy-v1.27.1-linux-amd64.tar.xz: 82e6523775df4dc610fef4a53dd19d464d7935a8ba2d8b4e2fcb5deb1cf7d237
   envoy-v1.27.1-linux-arm64.tar.xz: 8b9d27fb75a068bb9453a81cda4761454223644de35b18bd4d3299afa575d700
   envoy-v1.27.1-windows-amd64.tar.xz: f56c2214e641014c2e6c860f446e824fe581e08f418f2e6b4a9f33f9d1dd9077
   envoy-v1.27.2-darwin-amd64.tar.xz: c1744acb175c5e0869d6343f01ecc436aba333a1db0b8637af0115bd1233bef5
-  envoy-v1.27.2-darwin-arm64.tar.xz: "06688640e5e094e3199efbe71c1daaf50f462196ce9f3cb6e9f43462ae80d1e3"
+  envoy-v1.27.2-darwin-arm64.tar.xz: '06688640e5e094e3199efbe71c1daaf50f462196ce9f3cb6e9f43462ae80d1e3'
   envoy-v1.27.2-linux-amd64.tar.xz: b2c98ab3b9427485bcc9dceb06bfea2e6887e6129cb4dcadbf13062987cc23dd
   envoy-v1.27.2-linux-arm64.tar.xz: ce554de8512157076f1a129026f067cf82c3f0a63532aafe43134bb1b98e1f92
   envoy-v1.27.2-windows-amd64.tar.xz: b8e3e5356066918986b2ffafd677852995e2bcb3b907da9f1a86c21eed2b9127
   envoy-v1.28.0-linux-amd64.tar.xz: c84c3f1ed0d13dbdf01b6a719c16cb860c09aac26e8c5c6e8740c1f632598281
   envoy-v1.28.0-linux-arm64.tar.xz: d66f4f7ec0332f35f02f148202a702edd2a9638e47a372d09442de858235596e
   envoy-v1.28.0-windows-amd64.tar.xz: a118f5458c4ff53c03f957e82de47e4b235d0950fa2fde17035015741ad9e1b0
-envoy_checksum: "{{ envoy_checksums[envoy_archive] }}"
+envoy_checksum: '{{ envoy_checksums[envoy_archive] }}'
