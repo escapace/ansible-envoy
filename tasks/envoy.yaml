@@ -32,7 +32,7 @@
   block:
     - name: download envoy
       ansible.builtin.get_url:
-        url: '{{ envoy_archive_url }}'
+        url: "{{ envoy_archive_url }}"
         dest: /tmp/{{ envoy_archive }}
         owner: root
         group: root
@@ -44,7 +44,7 @@
       ansible.builtin.unarchive:
         src: /tmp/{{ envoy_archive }}
         dest: /usr/bin
-        mode: '0755'
+        mode: "0755"
         owner: root
         group: root
         setype: bin_t
