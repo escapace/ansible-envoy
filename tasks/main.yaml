@@ -1,3 +1,4 @@
 ---
-- ansible.builtin.include_tasks: envoy.yaml
-  when: ansible_os_family == "RedHat"
+- name: include envoy installation tasks
+  ansible.builtin.include_tasks: envoy.yaml
+  when: ansible_facts["os_family"] == "RedHat"

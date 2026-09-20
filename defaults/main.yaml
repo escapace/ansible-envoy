@@ -1,4 +1,7 @@
 ---
 # defaults file for escapace.envoy
 
-envoy_version: 1.32.3
+envoy_version: 1.38.4
+
+# Set this to a SHA-256 value to override embedded and release metadata.
+envoy_checksum: ""

@@ -1,5 +1,5 @@
 ---
-# vars file for escapace.observability
+# vars file for escapace.envoy
 
 envoy_goarch_map:
   amd64: amd64
@@ -7,7 +7,7 @@ envoy_goarch_map:
   aarch64: arm64
   64-bit: amd64
 
-envoy_goarch: "{{ envoy_goarch_map[ansible_architecture] }}"
+envoy_goarch: "{{ envoy_goarch_map[ansible_facts['architecture']] }}"
 
 envoy_archive: envoy-v{{ envoy_version }}-linux-{{ envoy_goarch }}.tar.xz
 envoy_archive_url: https://archive.tetratelabs.io/envoy/download/v{{ envoy_version }}/{{ envoy_archive }}
@@ -464,5 +464,15 @@ envoy_checksums:
     "envoy-v1.32.2-linux-arm64.tar.xz": "350c26ce694934979a869adc44b1e318b21b949d9eeeda598c8328d7ef6edd07",
     "envoy-v1.32.3-linux-amd64.tar.xz": "a1db9cd28201bfde8c9956fa54917458637bac3bd7cf5d0a09143ccb3026fae0",
     "envoy-v1.32.3-linux-arm64.tar.xz": "80b773b22652698f5ff391c7ddde9016f9fe342deb900f14a3b8d9f80d1a43ea",
+    "envoy-v1.38.4-linux-amd64.tar.xz": "8b57960fc3dd2eacca2678ece41556067fa44ac37c0dafe96bbb18a46d283e29",
+    "envoy-v1.38.4-linux-arm64.tar.xz": "52bfddc6a1984a8ff60f3aebe492bc6069ae31b318c9373f58b6cc68482bef35",
   }
-envoy_checksum: "{{ envoy_checksums[envoy_archive] }}"
+
+envoy_release_metadata_url: https://archive.tetratelabs.io/envoy/envoy-versions.json
+envoy_platform: linux/{{ envoy_goarch }}
+envoy_embedded_checksum: >-
+  {{
+    envoy_checksum
+    if envoy_checksum | length > 0
+    else envoy_checksums.get(envoy_archive, '')
+  }}

@@ -6,39 +6,93 @@
       - xz
     state: present
 
-- name: check envoy version
-  ansible.builtin.shell: |
-    set -e
-    set -u
-    set -o pipefail
+- name: check whether envoy is installed
+  ansible.builtin.stat:
+    path: /usr/bin/envoy
+  register: envoy_binary
 
-    if [[ -f "/usr/bin/envoy" ]]
-    then
-      version="$(/usr/bin/envoy --version | tail -n2 | head -n1 | awk '{ print $3 }' | awk -F'/' '{ print $2 }')"
-
-      echo "${version}"
-    else
-      exit 1
-    fi
-  args:
-    executable: /bin/bash
+- name: read the installed envoy version
+  ansible.builtin.command:
+    argv:
+      - /usr/bin/envoy
+      - --version
+  when: envoy_binary.stat.exists
   changed_when: false
-  ignore_errors: true
-  no_log: true
   register: envoy_current_version
 
 - name: install envoy
-  when: envoy_current_version.failed or envoy_current_version['stdout'] != envoy_version
+  when: >-
+    not envoy_binary.stat.exists
+    or ('/' ~ envoy_version ~ '/') not in (envoy_current_version.stdout | default(""))
   block:
+    - name: use the embedded envoy release metadata
+      ansible.builtin.set_fact:
+        envoy_resolved_archive_url: "{{ envoy_archive_url }}"
+        envoy_resolved_checksum: "{{ envoy_embedded_checksum }}"
+      when: envoy_embedded_checksum | length > 0
+
+    - name: retrieve envoy release metadata
+      ansible.builtin.uri:
+        url: "{{ envoy_release_metadata_url }}"
+        return_content: true
+      when: envoy_embedded_checksum | length == 0
+      register: envoy_release_metadata_response
+
+    - name: decode envoy release metadata
+      ansible.builtin.set_fact:
+        envoy_release_metadata: "{{ envoy_release_metadata_response.content | from_json }}"
+      when: envoy_embedded_checksum | length == 0
+
+    - name: select envoy release metadata
+      ansible.builtin.set_fact:
+        envoy_metadata_archive_url: >-
+          {{
+            envoy_release_metadata.get('versions', {})
+            .get(envoy_version, {})
+            .get('tarballs', {})
+            .get(envoy_platform, '')
+          }}
+        envoy_metadata_checksum: >-
+          {{
+            envoy_release_metadata.get('sha256sums', {})
+            .get(envoy_archive, '')
+          }}
+      when: envoy_embedded_checksum | length == 0
+
+    - name: validate envoy release metadata
+      ansible.builtin.assert:
+        that:
+          - envoy_metadata_archive_url is match('^https://')
+          - envoy_metadata_checksum is match('^[0-9a-fA-F]{64}$')
+        fail_msg: >-
+          The Envoy {{ envoy_version }} release metadata does not provide one
+          Linux {{ envoy_goarch }} archive and SHA-256 checksum.
+        quiet: true
+      when: envoy_embedded_checksum | length == 0
+
+    - name: resolve envoy release metadata
+      ansible.builtin.set_fact:
+        envoy_resolved_archive_url: "{{ envoy_metadata_archive_url }}"
+        envoy_resolved_checksum: "{{ envoy_metadata_checksum }}"
+      when: envoy_embedded_checksum | length == 0
+
+    - name: validate the envoy checksum
+      ansible.builtin.assert:
+        that:
+          - envoy_resolved_checksum is match('^[0-9a-fA-F]{64}$')
+        fail_msg: >-
+          The resolved Envoy {{ envoy_version }} checksum is invalid.
+        quiet: true
+
     - name: download envoy
       ansible.builtin.get_url:
-        url: "{{ envoy_archive_url }}"
+        url: "{{ envoy_resolved_archive_url }}"
         dest: /tmp/{{ envoy_archive }}
         owner: root
         group: root
-        mode: 660
+        mode: "0660"
         force: true
-        checksum: sha256:{{ envoy_checksum }}
+        checksum: sha256:{{ envoy_resolved_checksum }}
 
     - name: extract envoy
       ansible.builtin.unarchive:
@@ -52,7 +106,7 @@
         remote_src: true
         extra_opts: [--strip-components=2]
 
-    - name: cleanup
+    - name: remove downloaded envoy archive
       ansible.builtin.file:
         path: /tmp/{{ envoy_archive }}
         state: absent

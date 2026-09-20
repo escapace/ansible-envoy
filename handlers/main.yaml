@@ -1,6 +1,0 @@
----
-# handlers file for escapace.observability
-
-- name: observability daemon-reload
-  ansible.builtin.systemd:
-    daemon_reload: true
