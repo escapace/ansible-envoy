@@ -1,0 +1,15 @@
+---
+argument_specs:
+  main:
+    short_description: install the envoy binary on redhat-family systems
+    options:
+      envoy_version:
+        type: str
+        default: 1.38.4
+        description: Release version in major.minor.patch form, without a leading v.
+      envoy_checksum:
+        type: str
+        default: ""
+        description: >-
+          SHA-256 override as 64 hexadecimal characters. An empty string uses
+          the embedded artifact checksum or upstream release metadata.

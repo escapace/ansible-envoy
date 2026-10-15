@@ -1,0 +1,19 @@
+---
+- name: check invalid inputs
+  block:
+    - name: invoke the role with invalid inputs
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        envoy_version: "{{ envoy_test_invalid_input.version | default(envoy_test_defaults.envoy_version) }}"
+        envoy_checksum: "{{ envoy_test_invalid_input.checksum | default('') }}"
+
+    - name: fail if invalid inputs were accepted
+      ansible.builtin.fail:
+        msg: "Invalid inputs were accepted: {{ envoy_test_invalid_input }}"
+  rescue:
+    - name: verify that validation rejected the inputs
+      ansible.builtin.assert:
+        that:
+          - ansible_failed_task.action in ['ansible.builtin.assert', 'ansible.builtin.validate_argument_spec']
+          - "'Envoy requires' in ansible_failed_result.msg or ansible_failed_task.action == 'ansible.builtin.validate_argument_spec'"

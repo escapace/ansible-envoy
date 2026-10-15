@@ -1,4 +1,17 @@
 ---
+- name: validate envoy inputs
+  ansible.builtin.assert:
+    that:
+      - envoy_version is string
+      - envoy_version is match('^(0|[1-9][0-9]*)[.](0|[1-9][0-9]*)[.](0|[1-9][0-9]*)$')
+      - envoy_checksum is string
+      - envoy_checksum == '' or envoy_checksum is match('^[0-9a-fA-F]{64}$')
+      - ansible_facts["architecture"] in envoy_goarch_map
+    fail_msg: >-
+      Envoy requires a version string in major.minor.patch form, an empty
+      checksum or a 64-character SHA-256 hex digest, and a supported architecture.
+    quiet: true
+
 - name: install dependencies
   ansible.builtin.dnf:
     name:
@@ -18,12 +31,30 @@
       - --version
   when: envoy_binary.stat.exists
   changed_when: false
+  check_mode: false
   register: envoy_current_version
+
+- name: parse the installed envoy version
+  ansible.builtin.set_fact:
+    envoy_installed_versions: >-
+      {{
+        envoy_current_version.stdout | default('')
+        | regex_findall('/([0-9]+[.][0-9]+[.][0-9]+)/')
+      }}
+
+- name: validate the installed envoy version
+  ansible.builtin.assert:
+    that:
+      - envoy_installed_versions | length == 1
+    fail_msg: "Cannot identify the installed Envoy version: {{ envoy_current_version.stdout }}"
+    quiet: true
+  when: envoy_binary.stat.exists
 
 - name: install envoy
   when: >-
     not envoy_binary.stat.exists
-    or ('/' ~ envoy_version ~ '/') not in (envoy_current_version.stdout | default(""))
+    or not (envoy_installed_versions[0] is ansible.builtin.version(
+      envoy_version, '==', version_type='semver'))
   block:
     - name: use the embedded envoy release metadata
       ansible.builtin.set_fact:
@@ -34,27 +65,41 @@
     - name: retrieve envoy release metadata
       ansible.builtin.uri:
         url: "{{ envoy_release_metadata_url }}"
-        return_content: true
+        use_netrc: false
+        timeout: 30
+        status_code: [200]
       when: envoy_embedded_checksum | length == 0
+      check_mode: false
       register: envoy_release_metadata_response
+      retries: 3
+      delay: 2
+      until: envoy_release_metadata_response is succeeded
 
-    - name: decode envoy release metadata
-      ansible.builtin.set_fact:
-        envoy_release_metadata: "{{ envoy_release_metadata_response.content | from_json }}"
+    - name: validate the envoy release metadata structure
+      ansible.builtin.assert:
+        that:
+          - envoy_release_metadata_response.get('json') is mapping
+          - envoy_release_metadata_response.json.get('versions') is mapping
+          - envoy_release_metadata_response.json.get('versions', {}).get(envoy_version, {}) is mapping
+          - envoy_release_metadata_response.json.get('versions', {}).get(envoy_version, {}).get('tarballs', {}) is mapping
+          - envoy_release_metadata_response.json.get('sha256sums') is mapping
+        fail_msg: >-
+          Invalid release metadata for Envoy {{ envoy_version }} artifact {{ envoy_archive }}.
+        quiet: true
       when: envoy_embedded_checksum | length == 0
 
     - name: select envoy release metadata
       ansible.builtin.set_fact:
         envoy_metadata_archive_url: >-
           {{
-            envoy_release_metadata.get('versions', {})
+            envoy_release_metadata_response.json.get('versions', {})
             .get(envoy_version, {})
             .get('tarballs', {})
             .get(envoy_platform, '')
           }}
         envoy_metadata_checksum: >-
           {{
-            envoy_release_metadata.get('sha256sums', {})
+            envoy_release_metadata_response.json.get('sha256sums', {})
             .get(envoy_archive, '')
           }}
       when: envoy_embedded_checksum | length == 0
@@ -62,11 +107,20 @@
     - name: validate envoy release metadata
       ansible.builtin.assert:
         that:
-          - envoy_metadata_archive_url is match('^https://')
+          - envoy_metadata_archive_url is string
+          - envoy_metadata_archive_url is ansible.builtin.url(schemes=['https'])
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('hostname') == 'archive.tetratelabs.io'
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('netloc') == 'archive.tetratelabs.io'
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('username') is none
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('password') is none
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('path') == envoy_archive_url | ansible.builtin.urlsplit('path')
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('query') == ''
+          - envoy_metadata_archive_url | ansible.builtin.urlsplit('fragment') == ''
+          - envoy_metadata_checksum is string
           - envoy_metadata_checksum is match('^[0-9a-fA-F]{64}$')
         fail_msg: >-
-          The Envoy {{ envoy_version }} release metadata does not provide one
-          Linux {{ envoy_goarch }} archive and SHA-256 checksum.
+          The Envoy {{ envoy_version }} release metadata does not provide
+          the expected artifact {{ envoy_archive }} and SHA-256 checksum.
         quiet: true
       when: envoy_embedded_checksum | length == 0
 
@@ -93,6 +147,8 @@
         mode: "0660"
         force: true
         checksum: sha256:{{ envoy_resolved_checksum }}
+        use_netrc: false
+        timeout: 30
 
     - name: extract envoy
       ansible.builtin.unarchive:
@@ -105,6 +161,7 @@
         seuser: system_u
         remote_src: true
         extra_opts: [--strip-components=2]
+      when: not ansible_check_mode
 
     - name: remove downloaded envoy archive
       ansible.builtin.file:

@@ -1,0 +1,129 @@
+---
+- name: verify
+  hosts: all
+  vars:
+    envoy_test_goarch: "{{ envoy_test_vars.envoy_goarch_map[ansible_facts['architecture']] }}"
+  tasks:
+    - name: load the public defaults
+      ansible.builtin.include_vars:
+        file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/defaults/main.yaml"
+        name: envoy_test_defaults
+
+    - name: load the embedded checksums
+      ansible.builtin.include_vars:
+        file: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/vars/main.yaml"
+        name: envoy_test_vars
+
+    - name: inspect the installed binary
+      ansible.builtin.stat:
+        path: /usr/bin/envoy
+      register: envoy_test_binary
+
+    - name: read the installed version
+      ansible.builtin.command:
+        argv: [/usr/bin/envoy, --version]
+      changed_when: false
+      register: envoy_test_version
+
+    - name: verify the default installation
+      ansible.builtin.assert:
+        that:
+          - envoy_test_binary.stat.isreg
+          - envoy_test_binary.stat.mode == '0755'
+          - envoy_test_binary.stat.pw_name == 'root'
+          - envoy_test_binary.stat.gr_name == 'root'
+          - "'/' ~ envoy_test_defaults.envoy_version ~ '/' in envoy_test_version.stdout"
+
+    - name: install a release without an embedded checksum
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        envoy_version: 1.38.3
+
+    - name: verify checksum discovery
+      ansible.builtin.assert:
+        that:
+          - "'envoy-v1.38.3-linux-' ~ envoy_test_goarch ~ '.tar.xz' not in envoy_test_vars.envoy_checksums"
+          - envoy_release_metadata_response.json is mapping
+          - envoy_resolved_checksum == envoy_release_metadata_response.json.sha256sums['envoy-v1.38.3-linux-' ~ envoy_test_goarch ~ '.tar.xz']
+
+    - name: reapply the release without an embedded checksum
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        envoy_version: 1.38.3
+
+    - name: verify that the matching release skips metadata and installation
+      ansible.builtin.assert:
+        that:
+          - envoy_release_metadata_response.skipped
+          - envoy_installed_versions == ['1.38.3']
+
+    - name: select an explicit checksum distinct from the embedded representation
+      ansible.builtin.set_fact:
+        envoy_test_checksum: >-
+          {{
+            envoy_test_vars.envoy_checksums[
+              'envoy-v' ~ envoy_test_defaults.envoy_version
+              ~ '-linux-' ~ envoy_test_goarch ~ '.tar.xz'
+            ] | upper
+          }}
+
+    - name: restore the default release with an explicit checksum
+      ansible.builtin.include_role:
+        name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+      vars:
+        envoy_version: "{{ envoy_test_defaults.envoy_version }}"
+        envoy_checksum: "{{ envoy_test_checksum }}"
+
+    - name: verify that the explicit checksum takes precedence
+      ansible.builtin.assert:
+        that:
+          - envoy_release_metadata_response.skipped
+          - envoy_resolved_checksum == envoy_test_checksum
+
+    - name: reject invalid public inputs
+      ansible.builtin.include_tasks: tasks/invalid-input.yaml
+      loop:
+        - { version: "" }
+        - { version: null }
+        - { version: 123 }
+        - { version: "v1.38.4" }
+        - { version: "01.38.4" }
+        - { version: "1.38.4/other" }
+        - { checksum: null }
+        - { checksum: 123 }
+        - { checksum: "sha256:invalid" }
+        - { checksum: "{{ 'a' * 63 }}" }
+        - { checksum: "{{ 'a' * 65 }}" }
+      loop_control:
+        loop_var: envoy_test_invalid_input
+
+    - name: reject a release missing from upstream metadata
+      block:
+        - name: request an unavailable release
+          ansible.builtin.include_role:
+            name: "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') | basename }}"
+          vars:
+            envoy_version: 9999.0.0
+
+        - name: fail if the unavailable release was accepted
+          ansible.builtin.fail:
+            msg: The unavailable release was accepted.
+      rescue:
+        - name: verify the unavailable release diagnostic
+          ansible.builtin.assert:
+            that:
+              - ansible_failed_task.name == 'validate envoy release metadata'
+              - "'9999.0.0' in ansible_failed_result.msg"
+              - "'envoy-v9999.0.0-linux-' in ansible_failed_result.msg"
+
+    - name: inspect the temporary archive
+      ansible.builtin.stat:
+        path: /tmp/envoy-v{{ envoy_test_defaults.envoy_version }}-linux-{{ envoy_test_goarch }}.tar.xz
+      register: envoy_test_archive
+
+    - name: verify archive cleanup
+      ansible.builtin.assert:
+        that:
+          - not envoy_test_archive.stat.exists
