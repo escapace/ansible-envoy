@@ -29,11 +29,11 @@
     argv:
       - /usr/bin/envoy
       - --version
-  when: envoy_binary.stat.exists
-  changed_when: false
-  check_mode: false
   register: envoy_current_version
 
+  changed_when: false
+  check_mode: false
+  when: envoy_binary.stat.exists
 - name: parse the installed envoy version
   ansible.builtin.set_fact:
     envoy_installed_versions: >-
@@ -68,13 +68,13 @@
         use_netrc: false
         timeout: 30
         status_code: [200]
-      when: envoy_embedded_checksum | length == 0
-      check_mode: false
       register: envoy_release_metadata_response
-      retries: 3
-      delay: 2
+      check_mode: false
       until: envoy_release_metadata_response is succeeded
 
+      retries: 3
+      delay: 2
+      when: envoy_embedded_checksum | length == 0
     - name: validate the envoy release metadata structure
       ansible.builtin.assert:
         that:

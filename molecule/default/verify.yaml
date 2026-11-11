@@ -22,9 +22,9 @@
     - name: read the installed version
       ansible.builtin.command:
         argv: [/usr/bin/envoy, --version]
-      changed_when: false
       register: envoy_test_version
 
+      changed_when: false
     - name: verify the default installation
       ansible.builtin.assert:
         that:
